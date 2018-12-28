@@ -4,12 +4,10 @@ Spree::Image.class_eval do
   has_many :variant_images, class_name: '::Spree::VariantImage', dependent: :destroy
   has_many :variants, through: :variant_images
 
-  validates :variants_not_blank
+  validates :variants, :length => { :minimum => 1, :message => "can't be blank" } if: :viewable_is_variant?
 
-  def variants_not_blank
-  	if viewable_type == "Spree::Variant" && variants.length > 0
-  		errors.add(:variants, "Variants can't be blank")
-  	end
+  def viewable_is_variant?
+  	viewable_type == "Spree::Variant"
   end
 
   def variant_html_classes
